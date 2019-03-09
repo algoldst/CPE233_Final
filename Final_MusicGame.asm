@@ -16,7 +16,7 @@
 
 ; REGISTERS USED:
 ; (Rx80-x8C) = Notes to Test
-    ; 0:C, 1:C#, 2:D, 3:D#, 4:E, 5:F, 6:F#, 7:G, 8:G#, 9:A, 10:A#, 11:B, 12:C (2nd octave)
+    ; 1:C#, 2:D, 3:D#, 4:E, 5:F, 6:F#, 7:G, 8:G#, 9:A, 10:A#, 11:B, 12:C (2nd octave)
 ; R21 = Current Test Note
 ; R22 = Next Test Note
 ; R29 = Interrupt Flag
@@ -27,6 +27,7 @@ start:
             CLI
             BRN  practiceLoop
 practiceLoop:
+            CALL setup
             CALL playNote               ; Sets interrupt and begins random # gen
             CALL checkNote              ; Waits for Interupt and then checks User's Guess
             BRN  practiceLoop           ; Moves on to next round
@@ -62,41 +63,7 @@ setup:
                                         ;       0 --> Don't test
             MOV  R30, 0x00              ; Set score = 0
             OUT  R30, SSEG_PORT         ; Output initial score
-            MOV  R22, 0x01              ; Set first note to root (C) <-- If adding transpose, do it here.
-            RET
-
-RNG:                                    ; Find the next valid note (eg. next note that has a 1) -- looking in reverse!
-                                        ; Why reverse? Because we have comparator for <, but not > (only >=).
-            MOV  R1, R21                ; Start looking from the current note (check R21).
-            CALL getNoteAddr            ; Get this note's address >> R31
-            MOV  R1, R31
-RNG_next:   SUB  R1, 0x01               ; Move to previous note to check there
-            CMP  R1, SWITCH_PORT_START  ; Check it isn't past the first note
-            BRCS RNG_wrap               ; If it is an invalid port, begin again at the final note port
-            LD   R2, (R1)               ; If valid, check the note is enabled (=1)
-            CMP  R2, 0x01
-            BRNE RNG_next               ; If 0, go to next note
-            CALL getNote                ; If 1, get that note [1,12]
-            MOV  R22, R31                ; ...and store it in R22 (next test note)
-            CMP  R29, 0X01              ; Check if the interupt was triggered
-            BRNE RNG_next
-            RET
-RNG_wrap:
-            ADD  R20, 0x0E              ; Add 0x0E because we're at -1, need to go +1 past end (bc of sub in RNG_next).
-            BRN  RNG_next
-
-getNoteAddr:                            ; Returns note address (0x90+) based on note number.
-                                        ; getNoteAddr(R1=[1,12]) >> R31
-            SUB  R1, 0x01
-            ADD  R1, SWITCH_PORT_START
-            MOV  R31, R1
-            RET
-
-getNote:                                ; getNote(R1=Address[0x90+]) >> R31
-                                        ; Returns note [1,12] from address
-            ADD  R1, 0x01
-            SUB  R1, SWITCH_PORT_START
-            MOV  R31, R1
+            MOV  R21, 0x01              ; Set first note to root (C) <-- If adding transpose, do it here.
             RET
 
 ; Set SSEG display value
@@ -105,24 +72,65 @@ ssegSet:    OUT  R1, SSEG_PORT
 
 ; Read in switches to query which notes to test on
 readSwitches:
-            MOV  R0, SWITCH_PORT_START  ; R0 tracks which switch to read
-            MOV  R1, R0                 ; Hold switch value (1 or 0) in R1
-            MOV  R2, 0x80               ; Start storing at 0x80
-            ST   R1, (R2)
-readNextSwitch:
-            ADD  R0, 0x01               ; Increment the switch to read
-            ADD  R2, 0x01               ; Increment the storage location
-            IN   R1, (R0)               ; Read the next switch
-            ST   R1, (R2)               ; Store its value in 0x80-0x8C
-            CMP  R0, SWITCH_PORT_END    ; Have we reached the 12th switch?
-            BREQ readNextSwitch         ; If not, keep reading...
+            IN   R1, 0x90
+            ST   R1, 0x80
+            IN   R1, 0x91              
+            ST   R1, 0x81               
+            IN   R1, 0x92
+            ST   R1, 0x82
+            IN   R1, 0x93
+            ST   R1, 0x83
+            IN   R1, 0x94
+            ST   R1, 0x84
+            IN   R1, 0x95
+            ST   R1, 0x85
+            IN   R1, 0x96
+            ST   R1, 0x86
+            IN   R1, 0x97
+            ST   R1, 0x87
+            IN   R1, 0x98
+            ST   R1, 0x88
+            IN   R1, 0x99
+            ST   R1, 0x89
+            IN   R1, 0x9A
+            ST   R1, 0x8A
+            IN   R1, 0x9B
+            ST   R1, 0x8B
+            IN   R1, 0x9C
+            ST   R1, 0x8C
             RET
+
+RNG2:
+            MOV  R1, 0x80
+            MOV  R22, R1
+            MOV  R2, 0x8C
+
+RNG2_next:  
+            CMP  R29, 0x01
+            BRNE RNG_TEST
+            RET
+RNG_TEST:            
+            ADD  R22, 0x01
+            CMP  R22, R2
+            BREQ RNG2
+            BRN  RNG2_next
+
+noteSelector:
+            LD   R3, (R22)
+            CMP  R3, 0x01
+            BREQ noteChecker
+            SUB  R22, 0x01
+            CMP  R22, 0x80
+            BRCC noteSelector
+            MOV  R22, 0x8C
+            BRN  noteSelector
 
 
 checkNote:
             SEI                         ; Set enable interupt
 waitForInt:
-            CALL RNG                    ; Calculate next note while waiting for interupt
+            CALL RNG2                   ; Calculate random number
+            CALL noteSelector           ; Translate random number to random note
 
 noteChecker:
             MOV  R2, R20                ; Duplicate the note value
@@ -146,3 +154,49 @@ end:
 
 .ORG  0x3FF
             BRN  ISR
+
+
+
+
+
+
+
+
+
+
+
+
+; RNG:                                    ; Find the next valid note (eg. next note that has a 1) -- looking in reverse!
+;                                         ; Why reverse? Because we have comparator for <, but not > (only >=).
+;             MOV  R1, R21                ; Start looking from the current note (check R21).
+;             CALL getNoteAddr            ; Get this note's address >> R31
+;             MOV  R1, R31
+; RNG_next:   SUB  R1, 0x01               ; Move to previous note to check there
+;             CMP  R1, SWITCH_PORT_START  ; Check it isn't past the first note
+;             BRCS RNG_wrap               ; If it is an invalid port, begin again at the final note port
+;             LD   R2, (R1)               ; If valid, check the note is enabled (=1)
+;             CMP  R2, 0x01
+;             BRNE RNG_next               ; If 0, go to next note
+;             CALL getNote                ; If 1, get that note [1,12]
+;             MOV  R22, R31                ; ...and store it in R22 (next test note)
+;             CMP  R29, 0X01              ; Check if the interupt was triggered
+;             BRNE RNG_next
+;             RET
+; RNG_wrap:
+;             ADD  R20, 0x0E              ; Add 0x0E because we're at -1, need to go +1 past end (bc of sub in RNG_next).
+;             BRN  RNG_next
+
+; getNoteAddr:                            ; Returns note address (0x90+) based on note number.
+;                                         ; getNoteAddr(R1=[1,12]) >> R31
+;             SUB  R1, 0x01
+;             ADD  R1, SWITCH_PORT_START
+;             MOV  R31, R1
+;             RET
+
+; getNote:                                ; getNote(R1=Address[0x90+]) >> R31
+;                                         ; Returns note [1,12] from address
+;             ADD  R1, 0x01
+;             SUB  R1, SWITCH_PORT_START
+;             MOV  R31, R1
+;             RET
+
