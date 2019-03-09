@@ -40,18 +40,18 @@ playNote:                               ; Assumes R21 holds a value [0,12]
             OUT  0x00, SPEAKER_PORT     ; Stop playing the note
             RET
 
-playNoteDelay:
-NoteOUT:
+delay:
+delayOUTER:
             MOV  R1, MIDloopLength
-NoteMID:
+delayMIDDLE:
 
-NoteIN:
+delayINNER:
             MOV  R2, INloopLength
-            SUB  R2, 1
+            SUB  R2, 0x01
             BRNE NoteIN
-            SUB  R1, 1
+            SUB  R1, 0x01
             BRNE NoteMID
-            SUB  R0, 1
+            SUB  R0, 0x01
             BRNE playNoteDelay
 
 
