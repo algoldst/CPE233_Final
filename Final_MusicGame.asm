@@ -25,7 +25,7 @@
 
 start:
             CLI
-            CALL setup
+            BRN  practiceLoop
 practiceLoop:
             CALL playNote               ; Sets interrupt and begins random # gen
             CALL checkNote              ; Waits for Interupt and then checks User's Guess
