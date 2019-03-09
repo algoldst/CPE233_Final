@@ -139,5 +139,8 @@ guessIncorrect:
             OUT  0x00, SSEG_PORT        ; Output zero score
             BRN  start                  ; Restart the program
 
+ISR:        MOV  R29, 0x01              ; Set flag that interrupt was triggered
+            RETID
+
 .ORG  0x3FF
-            BRN  noteChecker
+            BRN  ISR
