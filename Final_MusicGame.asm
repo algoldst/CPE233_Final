@@ -40,7 +40,7 @@ playNote:                               ; Assumes R21 holds a value [0,12]
             OUT  0x00, SPEAKER_PORT     ; Stop playing the note
             RET
 
-delay:
+playNoteDelay:
             MOV  R1, OUTloopLength
 delayOUTER:
             MOV  R2, MIDloopLength
@@ -66,7 +66,7 @@ setup:
             RET
 
 RNG:                                    ; Find the next valid note (eg. next note that has a 1) -- looking in reverse!
-                                            ; Why reverse? Because we have comparator for <, but not > (only >=).
+                                        ; Why reverse? Because we have comparator for <, but not > (only >=).
             MOV  R1, R21                ; Start looking from the current note (check R21).
             CALL getNoteAddr            ; Get this note's address >> R31
             MOV  R1, R31
@@ -106,7 +106,7 @@ ssegSet:    OUT  R1, SSEG_PORT
 ; Read in switches to query which notes to test on
 readSwitches:
             MOV  R0, SWITCH_PORT_START  ; R0 tracks which switch to read
-            IN   R1, R0               ; Hold switch value (1 or 0) in R1
+            MOV  R1, R0                 ; Hold switch value (1 or 0) in R1
             MOV  R2, 0x80               ; Start storing at 0x80
             ST   R1, (R2)
 readNextSwitch:
@@ -128,7 +128,7 @@ noteChecker:
             MOV  R2, R20                ; Duplicate the note value
             CMP  R2, R1                 ; Check if user's guess is correct
             BREQ guessCorrect
-            BRN  reset
+            BRN  guessIncorrect
 guessCorrect:
             ADD  R30, 0x01              ; Increment user's score
             OUT  R30, SSEG_PORT         ; Output initial score
@@ -140,6 +140,9 @@ guessIncorrect:
 ISR:        MOV  R29, 0x01              ; Set flag that interrupt was triggered
             IN   R20, KEYPAD_PORT       ; Read user's guess from port
             RETID
+
+end:
+            BRN  end
 
 .ORG  0x3FF
             BRN  ISR
