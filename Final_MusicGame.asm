@@ -82,6 +82,8 @@ RNG_next:   SUB  R1, 0x01               ; Move to previous note to check there
             BRNE RNG_next               ; If 0, go to next note
             CALL getNote                ; If 1, get that note [1,12]
             MOV  R22, R31                ; ...and store it in R22 (next test note)
+            CMP  R29, 0X01              ; Check if the interupt was triggered
+            BRNE RNG_next
             RET
 RNG_wrap:
             ADD  R20, 0x0E              ; Add 0x0E because we're at -1, need to go +1 past end (bc of sub in RNG_next).
@@ -124,10 +126,10 @@ readNextSwitch:
 checkNote:
             SEI                         ; Set enable interupt
 waitForInt:
-            BRN  waitForInt             ; Wait for user to press a button
+            CALL RNG                    ; Calculate next note while waiting for interupt
+
 noteChecker:
-            IN   R1, KEYPAD_PORT        ; Read user's guess from port
-            MOV  R2, R21                ; Duplicate the note value
+            MOV  R2, R20                ; Duplicate the note value
             CMP  R2, R1                 ; Check if user's guess is correct
             BREQ guessCorrect
             BRN  reset
@@ -140,6 +142,7 @@ guessIncorrect:
             BRN  start                  ; Restart the program
 
 ISR:        MOV  R29, 0x01              ; Set flag that interrupt was triggered
+            IN   R20, KEYPAD_PORT        ; Read user's guess from port
             RETID
 
 .ORG  0x3FF
