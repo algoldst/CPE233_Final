@@ -41,22 +41,18 @@ playNote:                               ; Assumes R21 holds a value [0,12]
             RET
 
 delay:
+            MOV  R1, OUTloopLength
 delayOUTER:
-            MOV  R1, MIDloopLength
+            MOV  R2, MIDloopLength
 delayMIDDLE:
-
+            MOV  R3, INloopLength
 delayINNER:
-            MOV  R2, INloopLength
+            SUB  R3, 0x01
+            BRNE delayINNER
             SUB  R2, 0x01
-            BRNE NoteIN
+            BRNE delayMIDDLE
             SUB  R1, 0x01
-            BRNE NoteMID
-            SUB  R0, 0x01
-            BRNE playNoteDelay
-
-
-delay_loop: SUB  R1, 0x01
-            BRNE delay_loop
+            BRNE delayOUTER
             RET
 
 
@@ -87,7 +83,7 @@ RNG_next:   SUB  R1, 0x01               ; Move to previous note to check there
             RET
 RNG_wrap:
             ADD  R20, 0x0E              ; Add 0x0E because we're at -1, need to go +1 past end (bc of sub in RNG_next).
-            BRN  RNG_wrap
+            BRN  RNG_next
 
 getNoteAddr:                            ; Returns note address (0x90+) based on note number.
                                         ; getNoteAddr(R1=[1,12]) >> R31
@@ -142,7 +138,7 @@ guessIncorrect:
             BRN  start                  ; Restart the program
 
 ISR:        MOV  R29, 0x01              ; Set flag that interrupt was triggered
-            IN   R20, KEYPAD_PORT        ; Read user's guess from port
+            IN   R20, KEYPAD_PORT       ; Read user's guess from port
             RETID
 
 .ORG  0x3FF
