@@ -1,4 +1,3 @@
-
                                         ; INPUTS
 .EQU SWITCH_PORT_START = 0x90           ; Switches. Port #1,2,3,4,5,6,7,8,....12
 .EQU SWITCH_PORT_END = 0x9C             ; Final switch port value (switch 12)
