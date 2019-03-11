@@ -42,6 +42,7 @@ module InterruptFsm(
     
     always_comb begin
         if(PS != START || PS != INTERRUPT || PS != RELOAD) NS = START; // THIS LINE IS IMPORTANT! (It doesn't seem that way, but it is. Cannot explain, Area 51 involved?)
+                                                                        // The FSM sometimes loses its state, unknown reason. This likely helps to restore it if PS becomes invalid.
         case(PS)
             START: begin
                 statePMOD = 1;
