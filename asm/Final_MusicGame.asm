@@ -6,9 +6,9 @@
 .EQU SSEG_PORT = 0x81                   ; SSEG shows
 .EQU SPEAKER_PORT = 0x82
 
-.EQU INloopLength = 0x01
-.EQU MIDloopLength = 0x01
-.EQU OUTloopLength = 0x01
+.EQU INloopLength = 0xFF
+.EQU MIDloopLength = 0xFF
+.EQU OUTloopLength = 0xFF
 
 .CSEG
 .ORG 0x01
@@ -73,30 +73,55 @@ ssegSet:    OUT  R1, SSEG_PORT
 
 ; Read in switches to query which notes to test on
 readSwitches:
-            IN   R1, 0x91
+
+            MOV   R1, 0x01 ; Hardcode switches for testing.
             ST   R1, 0x81
-            IN   R1, 0x92
+            MOV   R1, 0x01
             ST   R1, 0x82
-            IN   R1, 0x93
+            MOV   R1, 0x01
             ST   R1, 0x83
-            IN   R1, 0x94
+            MOV   R1, 0x00
             ST   R1, 0x84
-            IN   R1, 0x95
+            MOV   R1, 0x00
             ST   R1, 0x85
-            IN   R1, 0x96
+            MOV   R1, 0x00
             ST   R1, 0x86
-            IN   R1, 0x97
+            MOV   R1, 0x00
             ST   R1, 0x87
-            IN   R1, 0x98
+            MOV   R1, 0x00
             ST   R1, 0x88
-            IN   R1, 0x99
+            MOV   R1, 0x00
             ST   R1, 0x89
-            IN   R1, 0x9A
+            MOV   R1, 0x00
             ST   R1, 0x8A
-            IN   R1, 0x9B
+            MOV   R1, 0x01
             ST   R1, 0x8B
-            IN   R1, 0x9C
+            MOV   R1, 0x01
             ST   R1, 0x8C
+            ; IN   R1, 0x91
+            ; ST   R1, 0x81
+            ; IN   R1, 0x92
+            ; ST   R1, 0x82
+            ; IN   R1, 0x93
+            ; ST   R1, 0x83
+            ; IN   R1, 0x94
+            ; ST   R1, 0x84
+            ; IN   R1, 0x95
+            ; ST   R1, 0x85
+            ; IN   R1, 0x96
+            ; ST   R1, 0x86
+            ; IN   R1, 0x97
+            ; ST   R1, 0x87
+            ; IN   R1, 0x98
+            ; ST   R1, 0x88
+            ; IN   R1, 0x99
+            ; ST   R1, 0x89
+            ; IN   R1, 0x9A
+            ; ST   R1, 0x8A
+            ; IN   R1, 0x9B
+            ; ST   R1, 0x8B
+            ; IN   R1, 0x9C
+            ; ST   R1, 0x8C
             RET
 
 RNG2:

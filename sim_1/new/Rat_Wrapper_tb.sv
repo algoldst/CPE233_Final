@@ -30,6 +30,10 @@ module Rat_Wrapper_tb(
     logic [7:0] LEDS;
     logic [7:0] SSEG; // SSEG segments
     logic [3:0] DISP_EN;
+    logic A, C, E;
+    logic B, D, F, G;
+    logic speakerOut;
+    logic [2:0] statePMOD;
     Rat_Wrapper rat_wrapper_tb( .* );
     
     always begin
@@ -39,16 +43,5 @@ module Rat_Wrapper_tb(
     
     initial begin
         #300;
-        BTNL = 1;
-        #10;
-        BTNL = 0;
-        #300;
-        BTNL = 1;
-        #10;
-        BTNL = 0;
-        #300;
-        BTNL = 1;
-        #10;
-        BTNL = 0;
     end
 endmodule
