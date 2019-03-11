@@ -73,31 +73,6 @@ ssegSet:    OUT  R1, SSEG_PORT
 
 ; Read in switches to query which notes to test on
 readSwitches:
-
-            ; MOV   R1, 0x01 ; Hardcode switches for testing.
-            ; ST   R1, 0x81
-            ; MOV   R1, 0x01
-            ; ST   R1, 0x82
-            ; MOV   R1, 0x01
-            ; ST   R1, 0x83
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x84
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x85
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x86
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x87
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x88
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x89
-            ; MOV   R1, 0x00
-            ; ST   R1, 0x8A
-            ; MOV   R1, 0x01
-            ; ST   R1, 0x8B
-            ; MOV   R1, 0x01
-            ; ST   R1, 0x8C
             IN   R1, 0x91       ; Read in values from switches (notes 1-12 on/off)
             ST   R1, 0x81
             IN   R1, 0x92
