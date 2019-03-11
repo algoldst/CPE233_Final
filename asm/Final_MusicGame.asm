@@ -15,7 +15,7 @@
 
 ; REGISTERS USED:
 ; (Rx81-x8C) = Notes to Test
-    ; 1:C#, 2:D, 3:D#, 4:E, 5:F, 6:F#, 7:G, 8:G#, 9:A, 10:A#, 11:B, 12:C (2nd octave)
+    ; 1:C, 2:C#, 3:D, 4:D#, 5:E, 6:F, 7:F#, 8:G, 9:G#, 10:A, 11:A#, 12:B (2nd octave)
 ; R20 = User note guess
 ; R21 = Current Test Note
 ; R22 = Next Test Note
@@ -73,10 +73,10 @@ ssegSet:    OUT  R1, SSEG_PORT
 
 ; Read in switches to query which notes to test on
 readSwitches:
-            IN   R1, 0x91       ; Read in values from switches (notes 1-12 on/off)
-            ST   R1, 0x81
-            IN   R1, 0x92
-            ST   R1, 0x82
+            IN   R1, 0x91       ; Read in the switch 1 (Root note, note 1, "C", etc.) --> [1 or 0]
+            ST   R1, 0x81       ; Store it in RAM
+            IN   R1, 0x92       ; Read the rest of the switches 1-12
+            ST   R1, 0x82       ; Notes that are active will be tested on. Inactive notes will be skipped over.
             IN   R1, 0x93
             ST   R1, 0x83
             IN   R1, 0x94
@@ -100,29 +100,29 @@ readSwitches:
             RET
 
 RNG2:
-            MOV  R1, 0x80
-            MOV  R22, R1
-            MOV  R2, 0x8C
+            MOV  R1, 0x80           ; Start looking for new note at 0x80
+            MOV  R22, R1            ; R22 (next test note) << R1
+            MOV  R2, 0x8C           ; R2 is the last valid note (note 12), after which we need to wrap
 
 RNG2_next:
-            CMP  R29, 0x01
-            BRNE RNG_TEST
-            RET
+            CMP  R29, 0x01          ; Check that interrupt has not been called yet (due to user input)
+            BRNE RNG_TEST           ; If not, continue the RNG
+            RET                     ; Else return
 RNG_TEST:
-            ADD  R22, 0x01
-            CMP  R22, R2
-            BREQ RNG2
-            BRN  RNG2_next
+            ADD  R22, 0x01          ; Increment the nextNote value
+            CMP  R22, R2            ; Check it isn't at the last valid note
+            BREQ RNG2               ; If it is, BRN to restart at 0x80
+            BRN  RNG2_next          ; Otherwise, keep going (check interrupt, and increment again)
 
 noteSelector:
-            LD   R3, (R22)
-            CMP  R3, 0x01
-            BREQ noteChecker
-            ADD  R22, 0x01
-            CMP  R22, 0x8D
-            BRNE noteSelector
-            MOV  R22, 0x80
-            BRN  noteSelector
+            LD   R3, (R22)          ; Whatever value R22 got from RNG, load that note address into R3.
+            CMP  R3, 0x01           ; If 1, it is a switched "on" note; otherwise, it is "off" and we need a new note
+            BREQ noteChecker        ; 1 --> We have found our next note! Proceed to check current note vs. user guess
+            ADD  R22, 0x01          ; 0 --> Increment the note selection until we find a note that is "on" (1).
+            CMP  R22, 0x8D          ; If the address is not an Out-of-Bounds (OOB) value...
+            BRNE noteSelector       ; ... loop to keep searching!
+            MOV  R22, 0x80          ; Otherwise, wrap around to the beginning of the addresses
+            BRN  noteSelector       ; And then keep searching!
 
 
 checkNote:
