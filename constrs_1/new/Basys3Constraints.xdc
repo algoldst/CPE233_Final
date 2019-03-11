@@ -209,8 +209,8 @@ set_property PACKAGE_PIN H2 [get_ports {G}]
 set_property PACKAGE_PIN J3 [get_ports {JA}]				
 	set_property IOSTANDARD LVCMOS33 [get_ports {JA}]
 ##Sch name = XA2_P
-#set_property PACKAGE_PIN L3 [get_ports {JXADC[1]}]				
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[1]}]
+#set_property PACKAGE_PIN L3 [get_ports {interruptPMOD}]				
+#	set_property IOSTANDARD LVCMOS33 [get_ports {interruptPMOD}]
 ##Sch name = XA3_P
 #set_property PACKAGE_PIN M2 [get_ports {JXADC[2]}]				
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[2]}]

@@ -25,7 +25,7 @@ module RAT_WRAPPERSim(
     );
     
     logic CLK, C, A, E, B, G, F, D;
-    logic BTNC, BTNL;
+    logic BTNC = 0, BTNL;
     logic JA;
     //logic INTERRUPT;
     logic [7:0] SWITCHES = 1;
@@ -41,7 +41,8 @@ module RAT_WRAPPERSim(
     end
     
     initial begin
-    #300;
+    #1000;
+    
     
     end
 
