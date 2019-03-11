@@ -73,8 +73,8 @@ ssegSet:    OUT  R1, SSEG_PORT
 
 ; Read in switches to query which notes to test on
 readSwitches:
-            IN   R1, 0x91              
-            ST   R1, 0x81               
+            IN   R1, 0x91
+            ST   R1, 0x81
             IN   R1, 0x92
             ST   R1, 0x82
             IN   R1, 0x93
@@ -104,11 +104,11 @@ RNG2:
             MOV  R22, R1
             MOV  R2, 0x8C
 
-RNG2_next:  
+RNG2_next:
             CMP  R29, 0x01
             BRNE RNG_TEST
             RET
-RNG_TEST:            
+RNG_TEST:
             ADD  R22, 0x01
             CMP  R22, R2
             BREQ RNG2

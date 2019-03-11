@@ -63,7 +63,7 @@ module RAT_WRAPPER(
                 
     //debounce_one_shot inst3 (.CLK(CLK), .BTN(BTNL), .DB_BTN(s_interrupt));
     
-    KeypadPeripheral inst4 (.CLK(CLK), .C(C), .A(A), .E(E), .B(B), .G(G), 
+    KeyPadDriver inst4 (.CLK(CLK), .C(C), .A(A), .E(E), .B(B), .G(G), 
                 .F(F), .D(D), .interrupt(s_interrupt), .data(KEYPAD));
                 
     FreqSelectorTopLevel inst5 (.CLK(CLK), .SWITCHES(speaker_o), .JA(JA));

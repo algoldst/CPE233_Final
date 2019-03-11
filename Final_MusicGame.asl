@@ -92,8 +92,8 @@ C5:  Raw line from source code.
 (0073)                            || 
 (0074)                            || ; Read in switches to query which notes to test on
 (0075)                     0x01E  || readSwitches:
-(0076)  CS-0x01E  0x32191         ||             IN   R1, 0x91              
-(0077)  CS-0x01F  0x3A181         ||             ST   R1, 0x81               
+(0076)  CS-0x01E  0x32191         ||             IN   R1, 0x91
+(0077)  CS-0x01F  0x3A181         ||             ST   R1, 0x81
 (0078)  CS-0x020  0x32192         ||             IN   R1, 0x92
 (0079)  CS-0x021  0x3A182         ||             ST   R1, 0x82
 (0080)  CS-0x022  0x32193         ||             IN   R1, 0x93
@@ -123,11 +123,11 @@ C5:  Raw line from source code.
 (0104)  CS-0x038  0x05609         ||             MOV  R22, R1
 (0105)  CS-0x039  0x3628C         ||             MOV  R2, 0x8C
 (0106)                            || 
-(0107)                     0x03A  || RNG2_next:  
+(0107)                     0x03A  || RNG2_next:
 (0108)  CS-0x03A  0x31D01         ||             CMP  R29, 0x01
 (0109)  CS-0x03B  0x081EB         ||             BRNE RNG_TEST
 (0110)  CS-0x03C  0x18002         ||             RET
-(0111)                     0x03D  || RNG_TEST:            
+(0111)                     0x03D  || RNG_TEST:
 (0112)  CS-0x03D  0x29601         ||             ADD  R22, 0x01
 (0113)  CS-0x03E  0x05610         ||             CMP  R22, R2
 (0114)  CS-0x03F  0x081BA         ||             BREQ RNG2
@@ -177,51 +177,6 @@ C5:  Raw line from source code.
 (0158)                       1023  || .ORG  0x3FF
 (0159)  CS-0x3FF  0x082C8         ||             BRN  ISR
 (0160)                            || 
-(0161)                            || 
-(0162)                            || 
-(0163)                            || 
-(0164)                            || 
-(0165)                            || 
-(0166)                            || 
-(0167)                            || 
-(0168)                            || 
-(0169)                            || 
-(0170)                            || 
-(0171)                            || 
-(0172)                            || ; RNG:                                    ; Find the next valid note (eg. next note that has a 1) -- looking in reverse!
-(0173)                            || ;                                         ; Why reverse? Because we have comparator for <, but not > (only >=).
-(0174)                            || ;             MOV  R1, R21                ; Start looking from the current note (check R21).
-(0175)                            || ;             CALL getNoteAddr            ; Get this note's address >> R31
-(0176)                            || ;             MOV  R1, R31
-(0177)                            || ; RNG_next:   SUB  R1, 0x01               ; Move to previous note to check there
-(0178)                            || ;             CMP  R1, SWITCH_PORT_START  ; Check it isn't past the first note
-(0179)                            || ;             BRCS RNG_wrap               ; If it is an invalid port, begin again at the final note port
-(0180)                            || ;             LD   R2, (R1)               ; If valid, check the note is enabled (=1)
-(0181)                            || ;             CMP  R2, 0x01
-(0182)                            || ;             BRNE RNG_next               ; If 0, go to next note
-(0183)                            || ;             CALL getNote                ; If 1, get that note [1,12]
-(0184)                            || ;             MOV  R22, R31                ; ...and store it in R22 (next test note)
-(0185)                            || ;             CMP  R29, 0X01              ; Check if the interupt was triggered
-(0186)                            || ;             BRNE RNG_next
-(0187)                            || ;             RET
-(0188)                            || ; RNG_wrap:
-(0189)                            || ;             ADD  R20, 0x0E              ; Add 0x0E because we're at -1, need to go +1 past end (bc of sub in RNG_next).
-(0190)                            || ;             BRN  RNG_next
-(0191)                            || 
-(0192)                            || ; getNoteAddr:                            ; Returns note address (0x90+) based on note number.
-(0193)                            || ;                                         ; getNoteAddr(R1=[1,12]) >> R31
-(0194)                            || ;             SUB  R1, 0x01
-(0195)                            || ;             ADD  R1, SWITCH_PORT_START
-(0196)                            || ;             MOV  R31, R1
-(0197)                            || ;             RET
-(0198)                            || 
-(0199)                            || ; getNote:                                ; getNote(R1=Address[0x90+]) >> R31
-(0200)                            || ;                                         ; Returns note [1,12] from address
-(0201)                            || ;             ADD  R1, 0x01
-(0202)                            || ;             SUB  R1, SWITCH_PORT_START
-(0203)                            || ;             MOV  R31, R1
-(0204)                            || ;             RET
-(0205)                            || 
 
 
 
