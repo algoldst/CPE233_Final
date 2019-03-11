@@ -6,9 +6,9 @@
 .EQU SSEG_PORT = 0x81                   ; SSEG shows
 .EQU SPEAKER_PORT = 0x82
 
-.EQU INloopLength = 0x01
-.EQU MIDloopLength = 0x01
-.EQU OUTloopLength = 0x01
+.EQU INloopLength = 0xFF
+.EQU MIDloopLength = 0xFF
+.EQU OUTloopLength = 0xFF
 
 .CSEG
 .ORG 0x01
