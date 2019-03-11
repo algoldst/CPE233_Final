@@ -28,7 +28,7 @@ module InterruptFsm(
     typedef enum{START, INTERRUPT, RELOAD} State;
     State NS, PS = START;
     
-    logic [2:0] cycleCounter = 0;
+    logic [7:0] cycleCounter = 0;
     always_ff @(posedge clk) begin
         PS = NS;
         if(PS == INTERRUPT) begin
@@ -46,8 +46,9 @@ module InterruptFsm(
                 else NS = START;
             end
             INTERRUPT: begin
-                interrupt = 1;
-                if(cycleCounter < 6) NS = INTERRUPT;
+                if(cycleCounter < 10) interrupt = 0;
+                else interrupt = 1;
+                if(cycleCounter < 16) NS = INTERRUPT;
                 else NS = RELOAD;
             end
             RELOAD: begin

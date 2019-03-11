@@ -12,7 +12,7 @@ loops:
 ISR:
             IN   R1, KEY_PORT
             OUT  R1, SSEG
-            RETID
+            RETIE
 
 .ORG 0x3FF
             BRN  ISR

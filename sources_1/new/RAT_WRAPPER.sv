@@ -21,7 +21,8 @@ module RAT_WRAPPER(
     output logic B, G, F, D,
     output [3:0] ANODES,
     output [7:0] CATHODES,
-    output JA
+    output JA,
+    output interruptPMOD
     );
     
     // INPUT PORT IDS ////////////////////////////////////////////////////////
@@ -65,7 +66,7 @@ module RAT_WRAPPER(
     
     KeyPadDriver inst4 (.CLK(CLK), .C(C), .A(A), .E(E), .B(B), .G(G), 
                 .F(F), .D(D), .interrupt(s_interrupt), .data(KEYPAD));
-                
+         assign interruptPMOD = s_interrupt;       
     FreqSelectorTopLevel inst5 (.CLK(CLK), .SWITCHES(speaker_o), .JA(JA));
     
     // Clock Divider to create 50 MHz Clock //////////////////////////////////

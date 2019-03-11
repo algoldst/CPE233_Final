@@ -31,7 +31,7 @@ C5:  Raw line from source code.
 (0012)                     0x003  || ISR:
 (0013)  CS-0x003  0x32180         ||             IN   R1, KEY_PORT
 (0014)  CS-0x004  0x34181         ||             OUT  R1, SSEG
-(0015)  CS-0x005  0x1A002         ||             RETID
+(0015)  CS-0x005  0x1A003         ||             RETIE
 (0016)                            || 
 (0017)                       1023  || .ORG 0x3FF
 (0018)  CS-0x3FF  0x08018         ||             BRN  ISR
