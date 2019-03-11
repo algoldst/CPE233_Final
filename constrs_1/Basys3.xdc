@@ -70,12 +70,12 @@ set_property PACKAGE_PIN V14 [get_ports {LEDS[7]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {led[11]}]
 #set_property PACKAGE_PIN P3 [get_ports {led[12]}]					
 	#set_property IOSTANDARD LVCMOS33 [get_ports {led[12]}]
-set_property PACKAGE_PIN N3 [get_ports {statePMOD[0]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {statePMOD[0]}]
-set_property PACKAGE_PIN P1 [get_ports {statePMOD[1]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {statePMOD[1]}]
-set_property PACKAGE_PIN L1 [get_ports {statePMOD[2]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {statePMOD[2]}]
+#set_property PACKAGE_PIN N3 [get_ports {statePMOD[0]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {statePMOD[0]}]
+#set_property PACKAGE_PIN P1 [get_ports {statePMOD[1]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {statePMOD[1]}]
+#set_property PACKAGE_PIN L1 [get_ports {statePMOD[2]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {statePMOD[2]}]
 	
 	
 ##7 segment display
@@ -206,14 +206,14 @@ set_property PACKAGE_PIN H2 [get_ports {G}]
 
 ##Pmod Header JXADC
 ##Sch name = XA1_P
-#set_property PACKAGE_PIN J3 [get_ports {JXADC[0]}]				
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[0]}]
+set_property PACKAGE_PIN J3 [get_ports {speakerOut}]				
+	set_property IOSTANDARD LVCMOS33 [get_ports {speakerOut}]
 ##Sch name = XA2_P
-set_property PACKAGE_PIN L3 [get_ports {interruptPMOD}]				
-	set_property IOSTANDARD LVCMOS33 [get_ports {interruptPMOD}]
-##Sch name = XA3_P
-set_property PACKAGE_PIN M2 [get_ports {pressPMOD}]				
-	set_property IOSTANDARD LVCMOS33 [get_ports {pressPMOD}]
+#set_property PACKAGE_PIN L3 [get_ports {interruptPMOD}]				
+#	set_property IOSTANDARD LVCMOS33 [get_ports {interruptPMOD}]
+###Sch name = XA3_P
+#set_property PACKAGE_PIN M2 [get_ports {pressPMOD}]				
+#	set_property IOSTANDARD LVCMOS33 [get_ports {pressPMOD}]
 ##Sch name = XA4_P
 #set_property PACKAGE_PIN N2 [get_ports {JXADC[3]}]				
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[3]}]

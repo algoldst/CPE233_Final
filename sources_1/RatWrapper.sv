@@ -21,10 +21,8 @@ module Rat_Wrapper(
     output B, D, F, G,
     output [7:0] LEDS,
     output [7:0] SSEG, // SSEG segments
-    output [3:0] DISP_EN // SSEG on/off
-    , output interruptPMOD, 
-    output [2:0] statePMOD
-    //, output debouncePmod, interruptPmod // for debugging / seeing interrupt on scope
+    output [3:0] DISP_EN, // SSEG on/off
+    output speakerOut
     );
     
     // INPUT PORT IDS ////////////////////////////////////////////////////////
@@ -104,8 +102,9 @@ module Rat_Wrapper(
                     .ANODES(DISP_EN) );  
     
     KeyPadDriver keypad_driver( .clk(CLK), .C(C), .A(A), .E(E), .B(B), .G(G), 
-                                .F(F), .D(D), .interrupt(s_interrupt), .data(r_keypad), .statePMOD(statePMOD) );
-    assign interruptPMOD = s_interrupt;
+                                .F(F), .D(D), .interrupt(s_interrupt), .data(r_keypad) );
+    
+    FreqSelectorTopLevel speaker_driver( .CLK(CLK), .SWITCHES(r_speaker), .JA(speakerOut));
     // Debounce Circuit
     //logic t_btnL = BTNL;                  // for debug
     //Debounce debounce(.CLK(s_clk_50), .BTN(BTNL), .DB_BTN(s_interrupt));
