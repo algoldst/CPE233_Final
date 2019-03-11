@@ -51,7 +51,7 @@ module RAT_WRAPPER(
     logic [7:0]   r_leds = 8'h00;
     logic [15:0]  s_seg = 8'h00;
     logic [15:0]  speaker_o = 8'h00;    
-    logic [3:0]   KEYPAD = 8'h00;    
+    logic [3:0]   KEYPAD;    
 
     // Declare RAT_CPU ///////////////////////////////////////////////////////
     Computer inst1 (.IN_PORT(s_input_port), .OUT_PORT(s_output_port),

@@ -28,7 +28,7 @@ module RAT_WRAPPERSim(
     logic BTNC, BTNL;
     logic JA;
     //logic INTERRUPT;
-    logic [7:0] SWITCHES;
+    logic [7:0] SWITCHES = 1;
     logic [3:0] ANODES;
     logic [7:0] CATHODES;
     //logic [7:0] LEDS;
