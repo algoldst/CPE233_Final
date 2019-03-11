@@ -22,9 +22,9 @@ C5:  Raw line from source code.
 (0006)                       129  || .EQU SSEG_PORT = 0x81                   ; SSEG shows
 (0007)                       130  || .EQU SPEAKER_PORT = 0x82
 (0008)                            || 
-(0009)                       001  || .EQU INloopLength = 0x01
-(0010)                       001  || .EQU MIDloopLength = 0x01
-(0011)                       001  || .EQU OUTloopLength = 0x01
+(0009)                       255  || .EQU INloopLength = 0xFF
+(0010)                       255  || .EQU MIDloopLength = 0xFF
+(0011)                       255  || .EQU OUTloopLength = 0xFF
 (0012)                            || 
 (0013)                            || .CSEG
 (0014)                       001  || .ORG 0x01
@@ -62,11 +62,11 @@ C5:  Raw line from source code.
 (0043)  CS-0x00C  0x18002         ||             RET
 (0044)                            || 
 (0045)                     0x00D  || playNoteDelay:
-(0046)  CS-0x00D  0x36101         ||             MOV  R1, OUTloopLength
+(0046)  CS-0x00D  0x361FF         ||             MOV  R1, OUTloopLength
 (0047)                     0x00E  || delayOUTER:
-(0048)  CS-0x00E  0x36201         ||             MOV  R2, MIDloopLength
+(0048)  CS-0x00E  0x362FF         ||             MOV  R2, MIDloopLength
 (0049)                     0x00F  || delayMIDDLE:
-(0050)  CS-0x00F  0x36301         ||             MOV  R3, INloopLength
+(0050)  CS-0x00F  0x363FF         ||             MOV  R3, INloopLength
 (0051)                     0x010  || delayINNER:
 (0052)  CS-0x010  0x2C301         ||             SUB  R3, 0x01
 (0053)  CS-0x011  0x08083         ||             BRNE delayINNER
@@ -270,10 +270,10 @@ WAITFORINT     0x04A   (0130)  ||
 
 -- Directives: .EQU
 ------------------------------------------------------------ 
-INLOOPLENGTH   0x001   (0009)  ||  0050 
+INLOOPLENGTH   0x0FF   (0009)  ||  0050 
 KEYPAD_PORT    0x080   (0004)  ||  0152 
-MIDLOOPLENGTH  0x001   (0010)  ||  0048 
-OUTLOOPLENGTH  0x001   (0011)  ||  0046 
+MIDLOOPLENGTH  0x0FF   (0010)  ||  0048 
+OUTLOOPLENGTH  0x0FF   (0011)  ||  0046 
 SPEAKER_PORT   0x082   (0007)  ||  0039 0042 
 SSEG_PORT      0x081   (0006)  ||  0066 0071 0143 0147 
 SWITCH_PORT_END 0x09C   (0003)  ||  

@@ -20,7 +20,7 @@ module RAT_WRAPPER(
     input [7:0] SWITCHES,
     output logic B, G, F, D,
     output [3:0] ANODES,
-    output [7:0] LEDS, CATHODES,
+    output [7:0] CATHODES,
     output JA
     );
     
@@ -51,7 +51,7 @@ module RAT_WRAPPER(
     logic [7:0]   r_leds = 8'h00;
     logic [15:0]  s_seg = 8'h00;
     logic [15:0]  speaker_o = 8'h00;    
-    logic [3:0]   KEYPAD = 8'h00;    
+    logic [3:0]   KEYPAD;    
 
     // Declare RAT_CPU ///////////////////////////////////////////////////////
     Computer inst1 (.IN_PORT(s_input_port), .OUT_PORT(s_output_port),
@@ -61,7 +61,7 @@ module RAT_WRAPPER(
     SevSegDisp inst2 (.CLK(CLK), .MODE(1'b0), .DATA_IN(s_seg), 
                 .CATHODES(CATHODES), .ANODES(ANODES));
                 
-    debounce_one_shot inst3 (.CLK(CLK), .BTN(BTNL), .DB_BTN(s_interrupt));
+    //debounce_one_shot inst3 (.CLK(CLK), .BTN(BTNL), .DB_BTN(s_interrupt));
     
     KeypadPeripheral inst4 (.CLK(CLK), .C(C), .A(A), .E(E), .B(B), .G(G), 
                 .F(F), .D(D), .interrupt(s_interrupt), .data(KEYPAD));
@@ -102,7 +102,7 @@ module RAT_WRAPPER(
     //assign s_interrupt = BTNL;  // no interrupt used yet
      
     // Output Assignments ////////////////////////////////////////////////////
-    assign LEDS = r_leds;
+    //assign LEDS = r_leds;
     //assign s_interrupt = DB_BTN;
    
     endmodule

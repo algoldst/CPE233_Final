@@ -24,13 +24,14 @@ module RAT_WRAPPERSim(
 
     );
     
-    logic CLK;
+    logic CLK, C, A, E, B, G, F, D;
     logic BTNC, BTNL;
-    logic INTERRUPT;
-    logic [7:0] SWITCHES;
+    logic JA;
+    //logic INTERRUPT;
+    logic [7:0] SWITCHES = 1;
     logic [3:0] ANODES;
     logic [7:0] CATHODES;
-    logic [7:0] LEDS;
+    //logic [7:0] LEDS;
     
     RAT_WRAPPER inst(.*);
     
@@ -40,12 +41,8 @@ module RAT_WRAPPERSim(
     end
     
     initial begin
-    #300
-    BTNL <= 1;
-    #30
-    BTNL <= 0;
-    #500
-    BTNL <= 1;
+    #300;
+    
     end
 
 
