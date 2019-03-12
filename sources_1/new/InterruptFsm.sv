@@ -38,6 +38,7 @@ module InterruptFsm(
         else begin
             cycleCounter = 0;
         end
+        
     end
     
     always_comb begin
@@ -46,6 +47,7 @@ module InterruptFsm(
         case(PS)
             START: begin
                 statePMOD = 1;
+                interrupt = 0;
                 if(press) NS = INTERRUPT;
                 else NS = START;
             end
