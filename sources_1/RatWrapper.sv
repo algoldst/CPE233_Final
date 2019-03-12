@@ -16,7 +16,7 @@ module Rat_Wrapper(
     input CLK,
     input BTNC,
     input BTNL,
-    input SWITCHES1, SWITCHES2, SWITCHES3, SWITCHES4, SWITCHES5, SWITCHES6, SWITCHES7, SWITCHES8, SWITCHES9, SWITCHES10, SWITCHES11, SWITCHES12,
+    input SWITCHES1, SWITCHES2, SWITCHES3, SWITCHES4, SWITCHES5, SWITCHES6, SWITCHES7, SWITCHES8, SWITCHES9, SWITCHES10, SWITCHES11, SWITCHES12, SWITCHES16,
     input A, C, E,
     output B, D, F, G,
     output [7:0] LEDS,
@@ -32,7 +32,8 @@ module Rat_Wrapper(
     // to add constants here for the mux below
     localparam  SWITCHES1_ID = 8'h91, SWITCHES2_ID = 8'h92, SWITCHES3_ID = 8'h93, SWITCHES4_ID = 8'h94,
                 SWITCHES5_ID = 8'h95, SWITCHES6_ID = 8'h96, SWITCHES7_ID = 8'h97, SWITCHES8_ID = 8'h98,
-                SWITCHES9_ID = 8'h99, SWITCHES10_ID = 8'h9A, SWITCHES11_ID = 8'h9B, SWITCHES12_ID = 8'h9C;
+                SWITCHES9_ID = 8'h99, SWITCHES10_ID = 8'h9A, SWITCHES11_ID = 8'h9B, SWITCHES12_ID = 8'h9C,
+                SWITCHES16_ID = 8'h85;
     localparam KEYPAD_ID   = 8'h80;
     logic [3:0]   r_keypad;
 
@@ -95,6 +96,8 @@ module Rat_Wrapper(
             s_input_port = SWITCHES11;
         else if (s_port_id == SWITCHES12_ID)
             s_input_port = SWITCHES12;
+        else if (s_port_id == SWITCHES16_ID)
+            s_input_port = SWITCHES16;
         else if (s_port_id == KEYPAD_ID)
             s_input_port = r_keypad;
         else

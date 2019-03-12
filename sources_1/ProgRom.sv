@@ -30,7 +30,7 @@ module ProgRom(
     
     // initialize the ROM with the prog_rom.mem file
     initial begin
-        $readmemh("Final_MusicGame.mem", rom, 0, 1023); // This must be edited to point to the .mem file you want to load.
+        $readmemh("Final_MusicGame2.mem", rom, 0, 1023); // This must be edited to point to the .mem file you want to load.
     end 
     
     always_ff @(posedge PROG_CLK) begin

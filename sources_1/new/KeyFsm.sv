@@ -84,8 +84,8 @@ module KeyFsm(
                 D = 1;
                 NS = PS;
                 if(C) keyOut = 10;
-                else if(A) keyOut = 0;
-                else if(E) keyOut = 11;
+                else if(A) keyOut = 11;
+                else if(E) keyOut = 12;
                 else begin 
                     keyOut = 13;
                     NS = CHECK_B;
