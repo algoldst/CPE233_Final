@@ -8,7 +8,7 @@
 
 .EQU INloopLength = 0xFF
 .EQU MIDloopLength = 0xFF
-.EQU OUTloopLength = 0xFF
+.EQU OUTloopLength = 0x80
 
 .CSEG
 .ORG 0x01
@@ -19,6 +19,7 @@
 ; R20 = User note guess
 ; R21 = Current Test Note
 ; R22 = Next Test Note
+; R24 = Top Active Note Address (the highest note that was "1" active)
 ; R29 = Interrupt Flag
 ; R30 = User Score
 ; R31 = Function default return register
@@ -73,46 +74,65 @@ ssegSet:    OUT  R1, SSEG_PORT
 
 ; Read in switches to query which notes to test on
 readSwitches:
+            MOV  R2, 0x80       ; R2 tracks what note we are reading in (starts from 1 before first note address)
             IN   R1, 0x91       ; Read in the switch 1 (Root note, note 1, "C", etc.) --> [1 or 0]
             ST   R1, 0x81       ; Store it in RAM
+            CALL recHighest     ; Record if this is the highest note position that has a 1
             IN   R1, 0x92       ; Read the rest of the switches 1-12
             ST   R1, 0x82       ; Notes that are active will be tested on. Inactive notes will be skipped over.
+            CALL recHighest
             IN   R1, 0x93
             ST   R1, 0x83
+            CALL recHighest
             IN   R1, 0x94
             ST   R1, 0x84
+            CALL recHighest
             IN   R1, 0x95
             ST   R1, 0x85
+            CALL recHighest
             IN   R1, 0x96
             ST   R1, 0x86
+            CALL recHighest
             IN   R1, 0x97
             ST   R1, 0x87
+            CALL recHighest
             IN   R1, 0x98
             ST   R1, 0x88
+            CALL recHighest
             IN   R1, 0x99
             ST   R1, 0x89
+            CALL recHighest
             IN   R1, 0x9A
             ST   R1, 0x8A
+            CALL recHighest
             IN   R1, 0x9B
             ST   R1, 0x8B
+            CALL recHighest
             IN   R1, 0x9C
             ST   R1, 0x8C
+            CALL recHighest
             RET
 
-RNG2:
-            MOV  R1, 0x80           ; Start looking for new note at 0x80
-            MOV  R22, R1            ; R22 (next test note) << R1
-            MOV  R2, 0x8C           ; R2 is the last valid note (note 12), after which we need to wrap
+recHighest:                         ; Tracks the highest note address that has a "1"
+            ADD  R2, 0x01           ; Increment the address
+            CMP  R1, 0x01           ; Is this a 1?
+            BREQ isHighest
+            RET                     ; If 0 --> RET without updating R24 (highest address)
+isHighest:  MOV  R24, R2            ; If 1 --> Update R24 with the new highest note address
+            RET
 
 RNG2_next:
             CMP  R29, 0x01          ; Check that interrupt has not been called yet (due to user input)
             BRNE RNG_TEST           ; If not, continue the RNG
             RET                     ; Else return
+RNG2:
+            MOV  R22, 0x80           ; Start looking for new note at 0x80 (1 pos before first note)
 RNG_TEST:
-            ADD  R22, 0x01          ; Increment the nextNote value
-            CMP  R22, R2            ; Check it isn't at the last valid note
-            BREQ RNG2               ; If it is, BRN to restart at 0x80
-            BRN  RNG2_next          ; Otherwise, keep going (check interrupt, and increment again)
+            CMP  R24, R22           ; Check it isn't past the last valid (active) note
+            BREQ RNG2               ; If it is (R22>R24), BRN to restart at 0x80
+            ADD  R22, 0x01          ; Otherwise, increment the nextNote value
+            BRN  RNG2_next          ; and keep going! (check interrupt, and increment again)
+
 
 noteSelector:
             LD   R3, (R22)          ; Whatever value R22 got from RNG, load that note address into R3.
