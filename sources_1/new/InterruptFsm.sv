@@ -66,9 +66,11 @@ module InterruptFsm(
                 if(press) NS = RELOAD;
                 else NS = START;
             end
-            default: begin
-                NS = START;
-            end
+//            default: begin
+//                NS = START;
+//                interrupt = 0;
+//                statePMOD = 0; 
+//            end
         endcase
     end
     
