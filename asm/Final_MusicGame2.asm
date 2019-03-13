@@ -136,6 +136,7 @@ guessIncorrect:
 
 levelMode:
             MOV  R12, LVL2        ; Assign initial level
+			OUT  R12, SSEG_PORT  ; Output players level to sseg.
             MOV  R14, 0x00        ; Assign initial score counter for correct guesses.
             MOV  R21, 0x01        ; Set first note to root (C) <-- If adding transpose, do it here.
 			CALL levelSet         ; Assign initial scratch ram values
@@ -149,15 +150,15 @@ gameMode:
 
 levelSet:                      ; Sets starting scratch ram values
             MOV  R2, 0x01
-            MOV  R24, 0x80
+            MOV  R24, 0x80				; Set initial highest note address
             BRN  levelSetLoop
 
 levelSetLoop:            
-            ADD  R24, 0x01
-            ST   R2, (R24)
+            ADD  R24, 0x01				; Increment highest note address
+            ST   R2, (R24)				; Move "1" into stack address
             MOV  R4, R24
             SUB  R4, 0x80
-            CMP  R4, R12
+            CMP  R4, R12				; Compare loop counter to player's level
             BRNE levelSetLoop
             RET
 
@@ -180,19 +181,15 @@ guessCorrect2:
 levelUp:
             ADD  R12, 0x01              ; Increment players level
             MOV  R14, 0x00              ; Reset players score
-			;MOV  R24, R12				; Copy players new level
-			;ADD  R24, 0x80				; Get new highest active note adress
-            CMP  R12, 0x0D
+            CMP  R12, 0x0D				; Check if player is past level 12
             BREQ beatGame
             CALL levelSet
             RET
 
 guessIncorrect2:
-            MOV  R12, LVL2
-            OUT  R12, SSEG_PORT
 			MOV  R0, 0x00
-            WSP  R0
-            BRN  start
+            WSP  R0						; Reset stack pointer to "0"
+            BRN  levelMode
 
 beatGame:                               ; If player passes level 11, flash level 12 6 times
                                         ; then turn off sseg display
