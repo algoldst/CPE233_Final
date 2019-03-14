@@ -7,13 +7,18 @@
 .EQU SSEG_PORT = 0x81                   ; SSEG shows
 .EQU SPEAKER_PORT = 0x82
 
-.EQU INloopLength = 0x01
-.EQU MIDloopLength = 0x01
-.EQU OUTloopLength = 0x01
+.EQU INloopLength = 0xFF
+.EQU MIDloopLength = 0xFF
+.EQU OUTloopLength = 0x80
+
+.EQU INsecloopLength = 0xB4
+.EQU MIDsecloopLength = 0xCA
+.EQU OUTsecloopLength = 0xAA
 
 .EQU GameMode_PORT = 0x85
 
 .EQU  LVL2 = 2
+.EQU  TIMED = 15
 
 
 .CSEG
@@ -24,7 +29,9 @@
     ; 1:C, 2:C#, 3:D, 4:D#, 5:E, 6:F, 7:F#, 8:G, 9:G#, 10:A, 11:A#, 12:B (2nd octave)
 ; R12: Player level
 ; R14: Score counter
+; R15: Time counter
 ; R16: Game mode
+; R17: Second delay value
 ; R20 = User note guess
 ; R21 = Current Test Note
 ; R22 = Next Test Note
@@ -35,8 +42,10 @@
 
 start:
             IN   R16, GameMode_PORT ; Retrieve what game mode player selected
-            CMP  R16, 0x01          ; Check which game mode the player selected
+            CMP  R16, 0x01          ; Check if player selected Level Mode
             BREQ levelMode
+			CMP  R16, 0x02			;Check if player selected Time Mode
+			BREQ playMode
             BRN  practiceMode
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -136,7 +145,7 @@ guessIncorrect:
 
 levelMode:
             MOV  R12, LVL2        ; Assign initial level
-			OUT  R12, SSEG_PORT  ; Output players level to sseg.
+			OUT  R12, SSEG_PORT   ; Output players level to sseg.
             MOV  R14, 0x00        ; Assign initial score counter for correct guesses.
             MOV  R21, 0x01        ; Set first note to root (C) <-- If adding transpose, do it here.
 			CALL levelSet         ; Assign initial scratch ram values
@@ -148,7 +157,7 @@ gameMode:
             BRN  gameMode        ; Continue game
 
 
-levelSet:                      ; Sets starting scratch ram values
+levelSet:                      			; Sets starting scratch ram values
             MOV  R2, 0x01
             MOV  R24, 0x80				; Set initial highest note address
             BRN  levelSetLoop
@@ -170,9 +179,9 @@ levelGuesses:
 
 guessCorrect2:
             ADD  R14, 0x01              ; Increment players score
-            MOV  R0, 0x00
+            MOV  R0,  0x00
             ADD  R21, 0x80
-            ST   R0, (R21)
+            ST   R0,  (R21)
             MOV  R21, R22				; Set new current note
             CMP  R12, R14               ; Compare players score to players level
             BREQ levelUp
@@ -224,7 +233,31 @@ beatGame:                               ; If player passes level 11, flash level
             CALL playNoteDelay
             BRN  end
 
-
+			
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; PLAY GAME MODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;			
+playMode:
+					
+			CALL listenforInput ;Loop playing '0'
+			CALL playNote
+			CMP  R29, 0x01
+			BREQ outputplay	
+			BRN  playMode			
+			
+listenforInput: 
+			MOV  R21, 0x00
+			CMP  R29, 0x01
+			BREQ returner
+			SEI
+returner:					 		
+			RET
+			
+outputplay:
+			MOV  R21, R20 
+			CALL playNote
+			MOV  R29, 0x00 
+			BRN  playMode
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SHARED FUNCTIONS
