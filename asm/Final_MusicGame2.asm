@@ -9,11 +9,7 @@
 
 .EQU INloopLength = 0xFF
 .EQU MIDloopLength = 0xFF
-.EQU OUTloopLength = 0x80
-
-.EQU INsecloopLength = 0xB4
-.EQU MIDsecloopLength = 0xCA
-.EQU OUTsecloopLength = 0xAA
+.EQU OUTloopLength = 0x40
 
 .EQU GameMode_PORT = 0x85
 
@@ -162,7 +158,7 @@ levelSet:                      			; Sets starting scratch ram values
             MOV  R24, 0x80				; Set initial highest note address
             BRN  levelSetLoop
 
-levelSetLoop:            
+levelSetLoop:
             ADD  R24, 0x01				; Increment highest note address
             ST   R2, (R24)				; Move "1" into stack address
             MOV  R4, R24
@@ -233,30 +229,30 @@ beatGame:                               ; If player passes level 11, flash level
             CALL playNoteDelay
             BRN  end
 
-			
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; PLAY GAME MODE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;			
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 playMode:
-					
+
 			CALL listenforInput ;Loop playing '0'
 			CALL playNote
 			CMP  R29, 0x01
-			BREQ outputplay	
-			BRN  playMode			
-			
-listenforInput: 
+			BREQ outputplay
+			BRN  playMode
+
+listenforInput:
 			MOV  R21, 0x00
 			CMP  R29, 0x01
 			BREQ returner
 			SEI
-returner:					 		
+returner:
 			RET
-			
+
 outputplay:
-			MOV  R21, R20 
+			MOV  R21, R20
 			CALL playNote
-			MOV  R29, 0x00 
+			MOV  R29, 0x00
 			BRN  playMode
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
